@@ -9,7 +9,9 @@ Stack: Next.js (App Router) + Supabase (Postgres, auth) + Resend (email), deploy
 ## 1. Create a Supabase project
 
 1. Go to [supabase.com](https://supabase.com) and create a new project.
-2. In **Project Settings > API**, copy the Project URL, `anon` public key, and `service_role` key.
+2. In **Project Settings > API Keys**, copy the Project URL, the **publishable** key, and
+   create a **secret** key (Supabase's newer key format — see the walkthrough below for
+   detail if you're not familiar with these).
 3. In **Database > SQL Editor**, paste and run the contents of [`supabase/schema.sql`](supabase/schema.sql).
 4. In **Authentication > Providers**, make sure **Email** is enabled. Under
    **Authentication > Sign In / Providers > Email**, turn off "Confirm email" if you'd
@@ -21,7 +23,7 @@ Stack: Next.js (App Router) + Supabase (Postgres, auth) + Resend (email), deploy
 
 Copy `.env.example` to `.env.local` and fill in:
 
-- `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` / `SUPABASE_SERVICE_ROLE_KEY` — from step 1.
+- `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` / `SUPABASE_SECRET_KEY` — from step 1.
 - `NEXT_PUBLIC_SITE_URL` — `http://localhost:3000` locally, your real domain once deployed.
 - `RESEND_API_KEY` / `REMINDER_FROM_EMAIL` — create a free account at [resend.com](https://resend.com),
   verify a sending domain (or use their test domain while developing), and generate an API key.
