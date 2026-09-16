@@ -23,7 +23,7 @@ export function ReminderForm({ current }: { current: ReminderFrequency }) {
           updateReminderFrequency(e.target.value as ReminderFrequency);
         })
       }
-      className="rounded-md border border-neutral-300 px-2 py-1 text-sm outline-none focus:border-neutral-500 disabled:opacity-50"
+      className="rounded-md border border-rule bg-ink px-2 py-1 text-sm text-text outline-none focus:border-brass disabled:opacity-50"
     >
       {OPTIONS.map((opt) => (
         <option key={opt.value} value={opt.value}>

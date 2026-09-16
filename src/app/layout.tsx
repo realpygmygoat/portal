@@ -1,16 +1,26 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import { NavBar } from "@/components/nav-bar";
+import { Fraunces, Newsreader, IBM_Plex_Mono } from "next/font/google";
+import { Sidebar } from "@/components/sidebar";
+import { DotField } from "@/components/dot-field";
+import { PageCurtain } from "@/components/page-curtain";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
   subsets: ["latin"],
+  weight: ["500", "600"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const newsreader = Newsreader({
+  variable: "--font-newsreader",
   subsets: ["latin"],
+  weight: ["400", "500"],
+});
+
+const plexMono = IBM_Plex_Mono({
+  variable: "--font-plex-mono",
+  subsets: ["latin"],
+  weight: ["400", "500"],
 });
 
 export const metadata: Metadata = {
@@ -22,11 +32,15 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${fraunces.variable} ${newsreader.variable} ${plexMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-neutral-50">
-        <NavBar />
-        <main className="flex-1">{children}</main>
+      <body className="min-h-full">
+        <PageCurtain />
+        <DotField />
+        <div className="flex min-h-screen">
+          <Sidebar />
+          <main className="min-w-0 flex-1">{children}</main>
+        </div>
       </body>
     </html>
   );

@@ -65,6 +65,23 @@ create table public.payments (
   created_at timestamptz not null default now()
 );
 
+-- ── Groups ───────────────────────────────────────────────────────────────
+-- A reusable, named set of members (e.g. "Spotify Crew") — purely an admin
+-- convenience so a recurring split doesn't need re-checking every billing
+-- period. Admin-only; members don't need to see these.
+create table public.groups (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  created_at timestamptz not null default now()
+);
+
+create table public.group_members (
+  group_id uuid not null references public.groups (id) on delete cascade,
+  profile_id uuid not null references public.profiles (id) on delete cascade,
+  created_at timestamptz not null default now(),
+  primary key (group_id, profile_id)
+);
+
 -- ── Auto-link auth users to pre-seeded profiles by email ───────────────────
 create or replace function public.handle_new_auth_user()
 returns trigger
@@ -135,6 +152,8 @@ alter table public.services enable row level security;
 alter table public.billing_periods enable row level security;
 alter table public.charges enable row level security;
 alter table public.payments enable row level security;
+alter table public.groups enable row level security;
+alter table public.group_members enable row level security;
 
 -- profiles: everyone can see their own row, admins see/manage everyone
 create policy "profiles_select" on public.profiles
@@ -174,6 +193,13 @@ create policy "payments_select_own_or_admin" on public.payments
   for select using (profile_id = public.current_profile_id() or public.is_admin());
 
 create policy "payments_write_admin" on public.payments
+  for all using (public.is_admin()) with check (public.is_admin());
+
+-- groups / group_members: admin-only, start to finish
+create policy "groups_admin_only" on public.groups
+  for all using (public.is_admin()) with check (public.is_admin());
+
+create policy "group_members_admin_only" on public.group_members
   for all using (public.is_admin()) with check (public.is_admin());
 
 -- ── Bootstrap: seed yourself as the first admin ─────────────────────────

@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentProfile } from "@/lib/get-profile";
 import { ReminderForm } from "./reminder-form";
+import { ChevronMark } from "@/components/chevron-mark";
 import type { MemberBalance, Payment } from "@/lib/database.types";
 
 function money(n: number) {
@@ -18,8 +19,8 @@ export default async function DashboardPage() {
 
   if (!profile) {
     return (
-      <div className="mx-auto max-w-4xl px-4 py-10">
-        <p className="text-sm text-neutral-600">
+      <div className="mx-auto max-w-3xl px-10 py-12">
+        <p className="text-sm text-text-muted">
           You&apos;re signed in, but there&apos;s no member profile for your account yet.
           Ask the admin to add you.
         </p>
@@ -50,49 +51,50 @@ export default async function DashboardPage() {
   const owed = balance?.balance ?? 0;
 
   return (
-    <div className="mx-auto max-w-4xl space-y-8 px-4 py-10">
-      <section className="rounded-xl border border-neutral-200 bg-white p-6 shadow-sm">
-        <p className="text-sm text-neutral-500">Your balance</p>
-        <p
-          className={`mt-1 text-4xl font-semibold ${owed > 0 ? "text-red-600" : "text-green-600"}`}
-        >
+    <div className="mx-auto max-w-3xl space-y-8 px-10 py-12">
+      <div className="flex items-center gap-2">
+        <ChevronMark size={16} />
+        <h1 className="text-xl font-semibold text-text">Dashboard</h1>
+      </div>
+
+      <section className="rounded-xl border border-rule bg-surface p-6">
+        <p className="font-mono text-xs text-text-muted">Your balance</p>
+        <p className={`mt-1 font-serif text-4xl font-semibold ${owed > 0 ? "text-red-400" : "text-sage"}`}>
           {money(owed)}
         </p>
-        <p className="mt-1 text-sm text-neutral-500">
+        <p className="mt-1 text-sm text-text-muted">
           {owed > 0 ? "You owe this much." : "You're all settled up."}
         </p>
 
-        <div className="mt-4 flex items-center gap-2 border-t border-neutral-100 pt-4 text-sm">
-          <span className="text-neutral-600">Remind me:</span>
+        <div className="mt-4 flex items-center gap-2 border-t border-rule pt-4 text-sm">
+          <span className="text-text-muted">Remind me:</span>
           <ReminderForm current={profile.reminder_frequency} />
         </div>
       </section>
 
       <section>
-        <h2 className="mb-3 text-sm font-semibold text-neutral-900">Charges</h2>
-        <div className="overflow-hidden rounded-xl border border-neutral-200 bg-white shadow-sm">
+        <h2 className="mb-3 text-sm font-semibold text-text">Charges</h2>
+        <div className="overflow-hidden rounded-xl border border-rule bg-surface">
           <table className="w-full text-sm">
-            <thead className="bg-neutral-50 text-left text-neutral-500">
-              <tr>
-                <th className="px-4 py-2 font-medium">Service</th>
-                <th className="px-4 py-2 font-medium">Period</th>
-                <th className="px-4 py-2 text-right font-medium">Amount</th>
+            <thead className="text-left text-text-muted">
+              <tr className="border-b border-rule">
+                <th className="px-4 py-3 font-medium">Service</th>
+                <th className="px-4 py-3 font-medium">Period</th>
+                <th className="px-4 py-3 text-right font-medium">Amount</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-neutral-100">
+            <tbody className="divide-y divide-rule">
               {charges && charges.length > 0 ? (
                 charges.map((c) => (
                   <tr key={c.id}>
-                    <td className="px-4 py-2">{c.billing_periods?.services?.name ?? "—"}</td>
-                    <td className="px-4 py-2 text-neutral-600">
-                      {c.billing_periods?.label ?? "—"}
-                    </td>
-                    <td className="px-4 py-2 text-right">{money(c.amount)}</td>
+                    <td className="px-4 py-3 text-text">{c.billing_periods?.services?.name ?? "—"}</td>
+                    <td className="px-4 py-3 text-text-muted">{c.billing_periods?.label ?? "—"}</td>
+                    <td className="px-4 py-3 text-right text-text">{money(c.amount)}</td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={3} className="px-4 py-6 text-center text-neutral-400">
+                  <td colSpan={3} className="px-4 py-8 text-center text-text-muted">
                     No charges yet.
                   </td>
                 </tr>
@@ -103,28 +105,28 @@ export default async function DashboardPage() {
       </section>
 
       <section>
-        <h2 className="mb-3 text-sm font-semibold text-neutral-900">Payments</h2>
-        <div className="overflow-hidden rounded-xl border border-neutral-200 bg-white shadow-sm">
+        <h2 className="mb-3 text-sm font-semibold text-text">Payments</h2>
+        <div className="overflow-hidden rounded-xl border border-rule bg-surface">
           <table className="w-full text-sm">
-            <thead className="bg-neutral-50 text-left text-neutral-500">
-              <tr>
-                <th className="px-4 py-2 font-medium">Date</th>
-                <th className="px-4 py-2 font-medium">Note</th>
-                <th className="px-4 py-2 text-right font-medium">Amount</th>
+            <thead className="text-left text-text-muted">
+              <tr className="border-b border-rule">
+                <th className="px-4 py-3 font-medium">Date</th>
+                <th className="px-4 py-3 font-medium">Note</th>
+                <th className="px-4 py-3 text-right font-medium">Amount</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-neutral-100">
+            <tbody className="divide-y divide-rule">
               {payments && payments.length > 0 ? (
                 payments.map((p) => (
                   <tr key={p.id}>
-                    <td className="px-4 py-2">{p.paid_at}</td>
-                    <td className="px-4 py-2 text-neutral-600">{p.note ?? "—"}</td>
-                    <td className="px-4 py-2 text-right">{money(p.amount)}</td>
+                    <td className="px-4 py-3 text-text">{p.paid_at}</td>
+                    <td className="px-4 py-3 text-text-muted">{p.note ?? "—"}</td>
+                    <td className="px-4 py-3 text-right text-text">{money(p.amount)}</td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={3} className="px-4 py-6 text-center text-neutral-400">
+                  <td colSpan={3} className="px-4 py-8 text-center text-text-muted">
                     No payments recorded yet.
                   </td>
                 </tr>

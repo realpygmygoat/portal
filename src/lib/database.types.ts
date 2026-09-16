@@ -48,6 +48,18 @@ export interface Payment {
   created_at: string;
 }
 
+export interface Group {
+  id: string;
+  name: string;
+  created_at: string;
+}
+
+export interface GroupMember {
+  group_id: string;
+  profile_id: string;
+  created_at: string;
+}
+
 export interface MemberBalance {
   profile_id: string;
   full_name: string;

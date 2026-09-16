@@ -109,3 +109,39 @@ export async function addBillingPeriod(formData: FormData) {
   revalidatePath("/admin");
   revalidatePath("/dashboard");
 }
+
+export async function createGroup(formData: FormData) {
+  await requireAdmin();
+  const supabase = await createClient();
+  const name = String(formData.get("name") || "").trim();
+  if (!name) return;
+  await supabase.from("groups").insert({ name });
+  revalidatePath("/admin/groups");
+}
+
+export async function deleteGroup(formData: FormData) {
+  await requireAdmin();
+  const supabase = await createClient();
+  const id = String(formData.get("group_id"));
+  await supabase.from("groups").delete().eq("id", id);
+  revalidatePath("/admin/groups");
+}
+
+export async function addGroupMember(formData: FormData) {
+  await requireAdmin();
+  const supabase = await createClient();
+  const group_id = String(formData.get("group_id"));
+  const profile_id = String(formData.get("profile_id"));
+  if (!group_id || !profile_id) return;
+  await supabase.from("group_members").insert({ group_id, profile_id });
+  revalidatePath("/admin/groups");
+}
+
+export async function removeGroupMember(formData: FormData) {
+  await requireAdmin();
+  const supabase = await createClient();
+  const group_id = String(formData.get("group_id"));
+  const profile_id = String(formData.get("profile_id"));
+  await supabase.from("group_members").delete().eq("group_id", group_id).eq("profile_id", profile_id);
+  revalidatePath("/admin/groups");
+}
